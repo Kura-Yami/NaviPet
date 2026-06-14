@@ -13,6 +13,8 @@ export type Destination = {
   category: string;
   building: string;
   floor: string;
+  floorId?: string;
+  roomId?: string;
   eta: string;
   distance: string;
   recent?: boolean;
@@ -104,42 +106,50 @@ export const users: UserAccount[] = [
 
 export const destinations: Destination[] = [
   {
-    id: "student-union",
-    name: "Student Union",
-    category: "Campus hub",
-    building: "USU",
+    id: "vec-214",
+    name: "VEC 214",
+    category: "Engineering classroom",
+    building: "Vivian Engineering Center",
     floor: "Level 2",
-    eta: "8 min",
-    distance: "0.4 mi",
+    floorId: "level-2",
+    roomId: "vec-214",
+    eta: "4 min",
+    distance: "310 ft",
     recent: true
   },
   {
-    id: "library",
-    name: "Library",
-    category: "Study space",
-    building: "University Library",
-    floor: "Level 1",
+    id: "robotics-lab",
+    name: "Robotics Lab",
+    category: "Research lab",
+    building: "Vivian Engineering Center",
+    floor: "Level 3",
+    floorId: "level-3",
+    roomId: "robotics-lab",
     eta: "6 min",
-    distance: "0.3 mi",
+    distance: "420 ft",
     recent: true
   },
   {
-    id: "lecture-hall",
-    name: "Lecture Hall",
-    category: "Classroom",
-    building: "LA5",
-    floor: "Room 203",
-    eta: "5 min",
-    distance: "0.2 mi"
+    id: "innovation-lab",
+    name: "Innovation Lab",
+    category: "Maker space",
+    building: "Vivian Engineering Center",
+    floor: "Level 1",
+    floorId: "level-1",
+    roomId: "innovation-lab",
+    eta: "3 min",
+    distance: "180 ft"
   },
   {
-    id: "campus-life",
-    name: "Campus Life",
-    category: "Student services",
-    building: "Brotman Hall",
-    floor: "Level 1",
-    eta: "9 min",
-    distance: "0.5 mi"
+    id: "engineering-advising",
+    name: "Engineering Advising",
+    category: "Student support",
+    building: "Vivian Engineering Center",
+    floor: "Level 2",
+    floorId: "level-2",
+    roomId: "advising-suite",
+    eta: "5 min",
+    distance: "360 ft"
   }
 ];
 
@@ -274,4 +284,3 @@ export const initialMessages: Record<string, ChatMessage[]> = {
     { id: "m5", from: "friend", body: "On my way. My pet guide is wearing the beach hat.", time: "Mon" }
   ]
 };
-

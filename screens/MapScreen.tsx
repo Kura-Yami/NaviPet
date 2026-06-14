@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Card from "../components/Card";
-import MapSurface from "../components/MapSurface";
+import IndoorMapSurface from "../components/IndoorMapSurface";
+import MapboxCampusRoute from "../components/MapboxCampusRoute";
 import PrimaryButton from "../components/PrimaryButton";
 import SearchBar from "../components/SearchBar";
 import { useAppState } from "../data/AppState";
@@ -18,6 +19,7 @@ export default function MapScreen() {
   const { activeUser, selectedOutfitId } = useAppState();
   const [mode, setMode] = useState<"2D" | "3D">("2D");
   const destination = destinations[0];
+  const [floorId, setFloorId] = useState(destination.floorId ?? "level-2");
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -35,7 +37,18 @@ export default function MapScreen() {
       </View>
 
       <View style={styles.mapWrap}>
-        <MapSurface height={430} outfitId={selectedOutfitId} />
+        {mode === "2D" ? (
+          <MapboxCampusRoute height={430} />
+        ) : (
+          <IndoorMapSurface
+            height={430}
+            selectedFloorId={floorId}
+            onFloorChange={setFloorId}
+            viewMode="stacked"
+            destinationName={destination.name}
+            outfitId={selectedOutfitId}
+          />
+        )}
         <View style={styles.toggle}>
           {(["2D", "3D"] as const).map((item) => (
             <Pressable
@@ -167,4 +180,3 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }
 });
-

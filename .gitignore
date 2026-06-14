@@ -4,6 +4,8 @@ node_modules/
 .npm-cache/
 dist/
 web-build/
+.env
+.env*.local
 expo-web*.log
 npm-debug.log*
 yarn-debug.log*
