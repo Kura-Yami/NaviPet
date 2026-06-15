@@ -10,6 +10,7 @@ type SearchBarProps = {
   placeholder?: string;
   onPress?: () => void;
   autoFocus?: boolean;
+  right?: React.ReactNode;
 };
 
 export default function SearchBar({
@@ -17,7 +18,8 @@ export default function SearchBar({
   onChangeText,
   placeholder = "Search destination",
   onPress,
-  autoFocus
+  autoFocus,
+  right
 }: SearchBarProps) {
   const content = (
     <View style={styles.search}>
@@ -33,6 +35,7 @@ export default function SearchBar({
         autoFocus={autoFocus}
         returnKeyType="search"
       />
+      {right}
     </View>
   );
 
