@@ -1,45 +1,163 @@
 # NaviPet
 
-NaviPet is an Expo React Native prototype for an indoor/outdoor navigation app where a customizable pet acts as the user's guide.
+NaviPet is an [Expo](https://expo.dev/) React Native prototype for an indoor/outdoor navigation app where a customizable pet acts as the user's guide.
 
-## What Is Built
+This is a **managed Expo app** (SDK 54) — pure TypeScript/JavaScript with no native `ios/` or `android/` folders. You run it inside the **Expo Go** host app, so there is no Xcode/Gradle compile step for normal development.
 
-- Sign in, sign up, and guest entry
-- Map home with search, profile, pet marker, destination card, 2D/3D toggle, and custom bottom navigation
-- Search, route preview, and active navigation flows
-- Pet customization with selectable outfits and gem balance
-- Store with outfit/gem tabs, item modal, and mock purchases
-- Profile settings and account switching
-- Hamburger menu overlay
-- Achievements and daily task checklist
-- Friends, friend profile, message list, and one-on-one chat
+---
 
-All data is mocked locally in `data/mockData.ts`. Prototype state is handled in `data/AppState.tsx`.
+## Prerequisites
 
-## Run
+Install these once before you start.
 
-```powershell
+| Tool | Required for | Notes |
+| --- | --- | --- |
+| [Node.js](https://nodejs.org/) 18+ | Everything | LTS recommended. Check with `node -v`. |
+| Git | Cloning the repo | |
+| [Xcode](https://apps.apple.com/app/xcode/id497799835) | **iOS** | macOS only. Open it once after installing to accept the license and let it install components. |
+| [Android Studio](https://developer.android.com/studio) | **Android** | Any OS. Used to get the Android emulator + SDK. |
+
+You do **not** need to install the Expo CLI globally — it ships with the project and is run through the npm scripts.
+
+### One-time iOS setup (macOS)
+
+1. Install Xcode from the App Store.
+2. Install the command-line tools and the iOS Simulator:
+   ```bash
+   xcode-select --install
+   ```
+3. Open **Xcode → Settings → Components** and make sure an iOS Simulator runtime is installed.
+
+### One-time Android setup
+
+1. Install Android Studio.
+2. Open **Android Studio → More Actions → Virtual Device Manager** and create a virtual device (e.g. Pixel 7, latest system image).
+3. Make sure the Android SDK platform-tools are on your `PATH` so `adb` works. On macOS/Linux add to your shell profile:
+   ```bash
+   export ANDROID_HOME="$HOME/Library/Android/sdk"   # macOS (Linux: ~/Android/Sdk)
+   export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
+   ```
+
+---
+
+## Install
+
+```bash
+git clone <your-repo-url>
+cd NaviPet
 npm install
-npm run web
 ```
 
-For Android with Expo Go on a real phone:
+---
 
-```powershell
-npm run android
+## Running on iOS and Android at the same time
+
+The recommended flow: start **one** Metro dev server, then open the app on both platforms. They share the same bundler.
+
+### Step 1 — Boot both devices
+
+**iOS Simulator** (macOS):
+```bash
+open -a Simulator
+```
+Wait for a simulated iPhone to finish booting.
+
+**Android Emulator** — either click ▶ next to your virtual device in Android Studio's Device Manager, or from the terminal:
+```bash
+emulator -list-avds          # see available emulator names
+emulator -avd <avd-name>     # boot one, e.g. Pixel_7_API_34
 ```
 
-Open the QR code with the Expo Go app. Your phone and computer need to be on the same Wi-Fi network.
+### Step 2 — Start the dev server
 
-For a TypeScript check:
+```bash
+npm start
+```
 
-```powershell
+This launches Metro and prints an interactive menu. From that terminal you can now open the app on each platform by pressing a key:
+
+- Press **`i`** → opens the app on the booted iOS Simulator
+- Press **`a`** → opens the app on the booted Android emulator
+- Press **`r`** → reload · **`m`** → toggle dev menu · **`w`** → open web
+
+Pressing `i` and then `a` runs the app on **both** at once, served by the same Metro instance. This is the simplest way to develop for iOS and Android simultaneously.
+
+> Shortcut: `npm run ios` and `npm run android` each start a server *and* auto-open one platform. If you want both, prefer `npm start` + pressing `i`/`a`, since two separate `npm run` commands will fight over port 8081.
+
+---
+
+## Running on a physical phone (iOS or Android)
+
+1. Install **Expo Go** from the [App Store](https://apps.apple.com/app/expo-go/id982107779) (iOS) or [Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) (Android).
+2. Make sure your phone and computer are on the **same Wi-Fi network**.
+3. Run `npm start`.
+4. Scan the QR code in the terminal:
+   - **iOS** → scan with the Camera app, tap the banner.
+   - **Android** → scan from inside the Expo Go app.
+
+---
+
+## Web
+
+```bash
+npm run web          # dev server in the browser
+npm run export:web   # static export to dist/
+npm run preview:web  # serve the static export locally
+```
+
+---
+
+## TypeScript check
+
+```bash
 npm run typecheck
 ```
 
-For a static web export:
+---
 
-```powershell
-npm run export:web
-npm run preview:web
+## Troubleshooting
+
+### "Device … has no app to handle the URI: exp://…" / "Unable to Install Expo Go" (iOS Simulator)
+
+This means **Expo Go is not installed** on the simulator (or the auto-download left a broken placeholder icon). It must match the project's SDK version (**54**). Install it manually:
+
+```bash
+# 1. Remove any broken placeholder
+xcrun simctl uninstall booted host.exp.Exponent
+
+# 2. Download the Expo Go build that matches SDK 54 (NOT the /versions/latest one — it can be stale)
+cd /tmp
+curl -L -o ExpoGo54.tar.gz \
+  "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-54.0.7/Expo-Go-54.0.7.tar.gz"
+
+# 3. Unpack and wrap it as a .app bundle
+mkdir -p ExpoGo54 && tar -xzf ExpoGo54.tar.gz -C ExpoGo54
+rm -rf "Expo Go.app" && cp -R ExpoGo54 "Expo Go.app"
+
+# 4. Install it on the booted simulator
+xcrun simctl install booted "/tmp/Expo Go.app"
+```
+
+Then run `npm start` and press `i` again. To find the correct URL for a different SDK, look up the `iosClientUrl` field at <https://api.expo.dev/v2/versions>.
+
+> On Android, Expo Go is installed automatically into the emulator the first time you press `a`. If it fails, install it once from the Play Store inside the emulator.
+
+### Port 8081 already in use
+
+A previous dev server is still running. Free the port and restart:
+
+```bash
+lsof -ti tcp:8081 | xargs kill -9
+npm start
+```
+
+### Emulator / Simulator not detected
+
+- iOS: make sure a simulator is **booted** before pressing `i` (`open -a Simulator`).
+- Android: run `adb devices` — your emulator should be listed. If not, reboot the emulator from Android Studio.
+
+### Stale bundler cache
+
+```bash
+npm start -- --clear
 ```
