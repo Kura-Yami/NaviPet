@@ -7,15 +7,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Card from "../components/Card";
 import IndoorMapSurface from "../components/IndoorMapSurface";
 import MapboxCampusRoute from "../components/MapboxCampusRoute";
+import MapboxMap from "../components/MapboxMap";
 import PrimaryButton from "../components/PrimaryButton";
 import SearchBar from "../components/SearchBar";
 import { useAppState } from "../data/AppState";
+import { destinations } from "../data/mockData";
 import { RootStackParamList } from "../navigation/types";
 import { colors, radius, shadows, spacing } from "../theme";
 
 export default function MapScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { activeUser } = useAppState();
+  const { activeUser, selectedOutfitId } = useAppState();
   const insets = useSafeAreaInsets();
   const [mode, setMode] = useState<"2D" | "3D">("2D");
   const destination = destinations[0];
@@ -41,14 +43,15 @@ export default function MapScreen() {
         <View style={styles.toggle}>
           {(["2D", "3D"] as const).map((item) => (
             <Pressable
+              key={item}
               onPress={() => navigation.navigate("ProfileSettings")}
               style={[styles.avatar, { backgroundColor: activeUser.avatarColor }]}
               accessibilityLabel="Open profile"
             >
               <Text style={styles.avatarText}>{activeUser.name.slice(0, 1)}</Text>
             </Pressable>
-          }
-        />
+          ))}
+        </View>
       </View>
 
       <View style={[styles.toggle, { bottom: insets.bottom + spacing.lg }]}>
@@ -72,6 +75,9 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.map
+  },
+  mapWrap: {
+    ...StyleSheet.absoluteFillObject
   },
   searchFloat: {
     position: "absolute",
