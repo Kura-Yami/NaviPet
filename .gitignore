@@ -12,3 +12,7 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 .navipet_figma/
+
+# Local env files (keep .env.example tracked)
+.env
+.env*.local
